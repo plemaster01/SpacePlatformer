@@ -12,7 +12,7 @@ timer = pygame.time.Clock()
 # font = pygame.font.Font('freesansbold.ttf', 20)
 active_level = 0
 active_phase = 3
-level = [[0 for _ in range(18)] for _ in range(7)]
+level = [[0 for _ in range(18)] for _ in range(9)]
 level.append([2 for _ in range(18)])
 level.append([1 for _ in range(18)])
 # load images

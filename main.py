@@ -12,8 +12,9 @@ screen = pygame.display.set_mode([WIDTH, HEIGHT])
 pygame.display.set_caption('Space Platformer')
 fps = 60
 timer = pygame.time.Clock()
+counting = pygame.time.Clock()
 # font = pygame.font.Font('freesansbold.ttf', 20)
-active_level = 0
+active_level = 2
 active_phase = 3
 level = levels[active_level][active_phase]
 # load images
@@ -68,7 +69,7 @@ gravity = .5
 colliding = 0
 lives = 5
 in_air = False
-jump_height = 15
+jump_height = 14
 inventory = [False, False, False, False]  # blue, green, red, yellow
 enter_message = False
 win = False
@@ -116,7 +117,7 @@ def draw_inventory():
     lives_text = font.render(f'Lives: {lives}', True, 'green')
     screen.blit(lives_text, (354, HEIGHT - 50))
     time_text = font.render(f'Elapsed Time:', True, 'white')
-    time_text2 = font.render(f'{time} seconds', True, 'white')
+    time_text2 = font.render(f'{time * 2.5} seconds', True, 'white')
     screen.blit(time_text, (600, HEIGHT - 110))
     screen.blit(time_text2, (600, HEIGHT - 80))
 
@@ -196,21 +197,26 @@ def check_collisions():
         collide = 0
 
     if 6 <= top_left <= 9:
-        inventory[top_left - 6] = True
-        level[top_coord][left_coord] = 0
-        key_sound.play()
+        if not inventory[top_left - 6]:
+            inventory[top_left - 6] = True
+            # level[top_coord][left_coord] = 0
+            key_sound.play()
     elif 6 <= top_right <= 9:
-        inventory[top_right - 6] = True
-        level[top_coord][right_coord] = 0
-        key_sound.play()
+        if not inventory[top_right - 6]:
+            key_sound.play()
+            inventory[top_right - 6] = True
+            # level[top_coord][right_coord] = 0
+
     elif 6 <= bot_left <= 9:
-        inventory[bot_left - 6] = True
-        level[bot_coord][left_coord] = 0
-        key_sound.play()
+        if not inventory[bot_left - 6]:
+            inventory[bot_left - 6] = True
+            # level[bot_coord][left_coord] = 0
+            key_sound.play()
     elif 6 <= bot_right <= 9:
-        inventory[bot_right - 6] = True
-        level[bot_coord][right_coord] = 0
-        key_sound.play()
+        if not inventory[bot_right - 6]:
+            inventory[bot_right - 6] = True
+            # level[bot_coord][right_coord] = 0
+            key_sound.play()
 
     doorways = [False, False, False, False]
     if 10 <= top_left <= 13:
@@ -280,7 +286,7 @@ def print_end(win_or_lose):
     win_text = font.render(win_or_lose, True, 'white')
     screen.blit(win_text, (100, 500))
     font = pygame.font.Font('freesansbold.ttf', 100)
-    win_text2 = font.render(f'Your Time: {time}', True, 'white')
+    win_text2 = font.render(f'Your Time: {time * 2.5}', True, 'white')
     screen.blit(win_text2, (950, 100))
     win_text2 = font.render(f'Enter to Restart', True, 'white')
     screen.blit(win_text2, (950, 300))
@@ -361,9 +367,10 @@ while run:
                         if door_collisions[i]:
                             if i != 3:
                                 active_phase, player_coords = teleport(i, active_phase)
-                                level = levels[active_level][active_phase]
+                                acid_list = []
                                 player_x = player_coords[0] * 100
                                 player_y = player_coords[1] * 100 - (8 * player_scale - 100)
+                                level = levels[active_level][active_phase]
                                 init_x = player_x
                                 init_y = player_y
                                 y_change = 0
